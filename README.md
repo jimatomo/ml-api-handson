@@ -1,3 +1,6 @@
+Status: Developing 
+
+
 # How to Deploy
 ```
 # Change your environment
@@ -19,7 +22,9 @@ kubectl get svc
 # Add AWS Load Balancer Controller Helm chart
 helm repo add eks https://aws.github.io/eks-charts
 
-kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"
+helm repo update
+
+kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller/crds?ref=master"
 
 # Get VPC ID from Terraform output
 export EKS_VPC_ID=`terraform output --raw eks_vpc_id`
@@ -46,16 +51,22 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-bala
 # Check Ingress and Pod
 kubectl get ingress/ingress-2048 -n game-2048
 kubectl get pod -n game-2048
+
+# After check to access the application, delete apps
+kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.4/docs/examples/2048/2048_full.yaml
+
 ```
 
+# ML API
+read ```fastapi/README.md```
 
 # Destory
 
 ```
-kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.4.4/docs/examples/2048/2048_full.yaml
+# Destroy
+cd $PROJECT_HOME
 
 terraform destroy
-```
 ```
 
 

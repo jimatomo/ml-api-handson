@@ -1,0 +1,62 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fastapi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: fastapi
+  name: deployment-fastapi
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: app-fastapi
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: app-fastapi
+    spec:
+      containers:
+      - image: 147967438560.dkr.ecr.ap-northeast-1.amazonaws.com/ml-api-handson:latest
+        imagePullPolicy: Always
+        name: app-fastapi
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: fastapi
+  name: service-fastapi
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+      protocol: TCP
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: app-fastapi
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: fastapi
+  name: ingress-fastapi
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internal
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: service-fastapi
+              port:
+                number: 80

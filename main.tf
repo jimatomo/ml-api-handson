@@ -47,7 +47,7 @@ locals {
   public_subnets_cidr  = ["10.10.0.0/24", "10.10.1.0/24", "10.10.2.0/24"]
   private_subnets_cidr = ["10.10.10.0/24", "10.10.11.0/24", "10.10.12.0/24"]
 
-  cluster_version = "1.24"
+  cluster_version = "1.26"
 
   tags = {
     terraform_project = local.name
@@ -223,6 +223,8 @@ module "eks" {
       max_size     = 10
       desired_size = 1
 
+      subnet_ids = [module.vpc.private_subnets[0]]
+
       instance_types = ["m5.large"]
       capacity_type  = "SPOT"
       labels = {
@@ -231,9 +233,9 @@ module "eks" {
         GithubOrg   = "terraform-aws-modules"
       }
 
-      update_config = {
-        max_unavailable_percentage = 33 # or set `max_unavailable`
-      }
+      # update_config = {
+      #   max_unavailable_percentage = 33 # or set `max_unavailable`
+      # }
 
       tags = {
         ExtraTag = "example"
@@ -268,6 +270,20 @@ module "eks" {
   manage_aws_auth_configmap = true
 
   tags = local.tags
+}
+
+
+################################################################################
+# ECR
+################################################################################
+
+resource "aws_ecr_repository" "ecr" {
+  name                 = local.name
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = false
+  }
 }
 
 
@@ -319,8 +335,8 @@ resource "aws_security_group" "additional" {
   vpc_id      = module.vpc.vpc_id
 
   ingress {
-    from_port = 80
-    to_port   = 80
+    from_port = 22
+    to_port   = 22
     protocol  = "tcp"
     cidr_blocks = [
       "10.0.0.0/8",
@@ -345,8 +361,30 @@ resource "aws_iam_policy" "additional" {
         Effect   = "Allow"
         Resource = "*"
       },
+      {
+        Action = [
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:BatchGetImage",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:GetAuthorizationToken"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
     ]
   })
 
   tags = local.tags
+}
+
+
+################################################################################
+# Taaurus Server
+################################################################################
+
+module "taurus_ec2" {
+  source = "./module/taurus"
+
+  vpc_id        = module.vpc.vpc_id
+  ec2_subnet_id = module.vpc.private_subnets[0]
 }
