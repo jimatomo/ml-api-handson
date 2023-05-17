@@ -1,0 +1,37 @@
+execution:
+- concurrency: 1
+  ramp-up: 1s
+  hold-for: 1s
+  iterations: 30
+  scenario: fastapi-test
+
+scenarios:
+  fastapi-test:
+    timeout: 5s
+    retrieve-resources: false
+    store-cache: false
+    store-cookie: false
+    default-address: http://internal-k8s-fastapi-ingressf-f385b3472b-565323687.ap-northeast-1.elb.amazonaws.com # modify
+    headers:
+      Content-Type: application/json
+      accept: application/json
+    requests:
+    - url: '/prediction/online'
+      method: POST
+      body:
+        data: 
+        - PassengerId: "892"
+          Pclass: "3"
+          Name: "Kelly, Mr. James"
+          Sex: "male"
+          Age: "34.5"
+          SibSp: "0"
+          Parch: "0"
+          Ticket: "330911"
+          Fare: "7.8292"
+          Cabin: ""
+          Embarked: "Q"
+
+reporting:
+- final-stats
+- console

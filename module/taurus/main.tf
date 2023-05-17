@@ -64,7 +64,7 @@ resource "local_file" "ec2_key_pem" {
 # Import public key to AWS EC2 Key Pair
 resource "aws_key_pair" "ec2_key_keypair" {
   key_name   = local.name
-  public_key = "${tls_private_key.ec2_key.public_key_openssh}"
+  public_key = trimspace(tls_private_key.ec2_key.public_key_openssh)
 }
 
 
