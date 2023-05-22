@@ -269,6 +269,8 @@ module "eks" {
 
   manage_aws_auth_configmap = true
 
+  aws_auth_accounts = [ data.aws_caller_identity.current.account_id ]
+
   tags = local.tags
 }
 
@@ -382,9 +384,9 @@ resource "aws_iam_policy" "additional" {
 # Taaurus Server
 ################################################################################
 
-module "taurus_ec2" {
-  source = "./module/taurus"
+# module "taurus_ec2" {
+#   source = "./module/taurus"
 
-  vpc_id        = module.vpc.vpc_id
-  ec2_subnet_id = module.vpc.private_subnets[0]
-}
+#   vpc_id        = module.vpc.vpc_id
+#   ec2_subnet_id = module.vpc.private_subnets[0]
+# }
