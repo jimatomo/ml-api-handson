@@ -7,7 +7,7 @@ from sagemaker import get_execution_role
 sagemaker_role = get_execution_role()
 
 # Container Image URI
-IMAGE_URI="147967438560.dkr.ecr.ap-northeast-1.amazonaws.com/byol-ml-model:latest"
+IMAGE_URI="<account_id>.dkr.ecr.ap-northeast-1.amazonaws.com/byol-ml-model:latest"
 
 # Create Model Object
 model = Model(image_uri=IMAGE_URI, 
