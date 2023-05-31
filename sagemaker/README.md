@@ -117,7 +117,7 @@ locust -f sagemaker_test.py \
 ```
 
 ```
-# change --host option to your endpoint name
+# open web ui
 locust -f sagemaker_test.py
 ```
 

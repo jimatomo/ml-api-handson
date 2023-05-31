@@ -20,7 +20,7 @@ spec:
         app.kubernetes.io/name: app-fastapi
     spec:
       containers:
-      - image: 147967438560.dkr.ecr.ap-northeast-1.amazonaws.com/ml-api-handson:latest
+      - image: <account id>.dkr.ecr.ap-northeast-1.amazonaws.com/ml-api-handson:latest # modify
         imagePullPolicy: Always
         name: app-fastapi
         ports:

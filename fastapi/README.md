@@ -119,6 +119,18 @@ bzt taurus_script.yml
 ```
 
 
+# locust
+```
+# python3 -m venv locust
+source locust/bin/activate
+pip install -U pip
+pip install locust
+
+locust -f fastapi_test.py \
+  --host="http://${API_ENDPOINT_HOSTNAME}/prediction/online"
+```
+
+
 # Delete API
 ```
 # After check to access the application, delete apps

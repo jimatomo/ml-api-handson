@@ -20,7 +20,10 @@ class ML_API:
     def predict(self, input_data):
         # Parse Json(Dict) to pandas df
         input_json = json.loads(input_data)
-        data = pd.DataFrame(input_json)
+
+        print(input_json)
+
+        data = pd.DataFrame(input_json["data"])
         passenger_ids = data['PassengerId']
 
         # Preprocessing
@@ -39,7 +42,6 @@ class ML_API:
         prediction = self.model.predict(data)
 
         # Postprocessing
-        data['Prediction'] = prediction
-        result = pd.concat([passenger_ids, data], axis=1)
+        list_prediction = prediction.tolist()
 
-        return {"prediction": result.to_dict(orient='records')}
+        return list_prediction
